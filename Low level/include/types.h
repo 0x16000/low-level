@@ -18,6 +18,10 @@ void Option() {
 
     printf("\n");
 
+    printf("2: Show CPU information\n")M
+
+    printf("\n");
+
     printf("Enter your Choice: ");
     scanf("%d", &input);
 
@@ -35,8 +39,30 @@ void Option() {
         } else {
             printf("Unable to read memory.\n");
         }
+    } else if (input == 2) {
+        // Show CPU info from /proc/cpuinfo
+        FILE *fp = fopen("/proc/cpuinfo", "r");
+        if (fp == NULL) {
+            perror("Error opening /proc/cpuinfo");
+            return;  // Exit the function if CPU info can't be opened
+        }
+
+        char buffer[256];
+        int found_cpu = 0;
+
+        while (fgets(buffer, sizeof(buffer), fp)) {
+            // Only print the first occurrence of the CPU model name
+            if (strncmp(buffer, "model name", 10) == 0 && !found_cpu) {
+                printf("CPU Info: %s", buffer);
+                found_cpu = 1;  // Stop after finding the first CPU model name
+            }
+        }
+        fclose(fp);  // Close file after reading
+    } else {
+        printf("Invalid choice.\n");
     }
 }
+
 
 // Define the clear function outside Option()
 void clear() {
